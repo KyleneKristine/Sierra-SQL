@@ -18,7 +18,6 @@ startingbib integer | endingbib integer
 1000001|8181155
 <br>
 <br> 
-<br>
 
 ## More Than One Field
 
