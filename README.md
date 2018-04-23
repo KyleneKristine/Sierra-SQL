@@ -59,22 +59,22 @@ AND leader_field.record_id = record_metadata.id
 ## Transactions by Date
 Returns Item Numbers of items that circulated during specified time frame.
 ```sql
-SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as BibNumber, 
+SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as ItemNumber, 
   circ_trans.transaction_gmt as TransTime
 FROM sierra_view.record_metadata, sierra_view.circ_trans
 WHERE circ_trans.item_record_id = record_metadata.id
 AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter dates
-GROUP BY BibNumber, TransTime
+GROUP BY ItemNumber, TransTime
 ```
 ###### By Patron Code
 ```sql
-SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as BibNumber, 
+SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as ItemNumber, 
   circ_trans.ptype_code as Ptype, circ_trans.transaction_gmt as TransTime
 FROM sierra_view.record_metadata, sierra_view.circ_trans
 WHERE circ_trans.item_record_id = record_metadata.id
 AND circ_trans.ptype_code = '21' -- enter ptype
 AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter dates
-GROUP BY Ptype, BibNumber, TransTime
+GROUP BY Ptype, ItemNumber, TransTime
 ORDER BY Ptype
 ```
 <br>
