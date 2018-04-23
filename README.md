@@ -26,7 +26,7 @@ Returns BIB Numbers that have more than one field in the record.
 ```sql
 SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as BibNumber
 FROM sierra_view.record_metadata, sierra_view.control_field
-WHERE control_field.control_num = '7'
+WHERE control_field.control_num = '7' --6, 7, or 8 which equal 006, 007, or 008 respectively.
 AND control_field.record_id = record_metadata.id
 GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```
@@ -35,7 +35,7 @@ GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```sql
 SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as BibNumber
 FROM sierra_view.record_metadata, sierra_view.varfield
-WHERE varfield.marc_tag = '245'
+WHERE varfield.marc_tag = '245' --enter marc tag
 AND varfield.record_id = record_metadata.id
 GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```
