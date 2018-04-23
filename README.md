@@ -38,3 +38,13 @@ WHERE varfield.marc_tag = '245'
 AND varfield.record_id = record_metadata.id
 GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```
+
+In process
+SELECT record_metadata.record_type_code || record_metadata.record_num as BibNumber
+FROM sierra_view.record_metadata, sierra_view.varfield
+WHERE 
+(varfield.marc_tag = '856'
+AND varfield.field_content like '%https://login.revproxy.brown.edu/login?url=%')
+AND (varfield,)
+AND varfield.record_id = record_metadata.id
+GROUP BY BibNumber HAVING COUNT(*) > 0;
