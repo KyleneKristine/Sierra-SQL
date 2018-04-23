@@ -43,7 +43,8 @@ GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```sql
 SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as BibNumber
 FROM sierra_view.record_metadata, sierra_view.varfield, sierra_view.leader_field
-WHERE varfield.marc_tag = '856' AND varfield.field_content not like '%https://login.revproxy.brown.edu/login?url=%'
+WHERE varfield.marc_tag = '856' 
+AND varfield.field_content not like '%https://login.revproxy.brown.edu/login?url=%'
 AND leader_field.record_type_code = 'm'
 AND varfield.record_id = record_metadata.id
 AND leader_field.record_id = record_metadata.id
