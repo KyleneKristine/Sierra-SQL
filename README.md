@@ -53,6 +53,7 @@ AND varfield.record_id = record_metadata.id
 AND leader_field.record_id = record_metadata.id
 ```
 <br>
+
 ## Transactions by Date
 Returns Item Numbers of items that circulated during specified time frame.
 ```sql
