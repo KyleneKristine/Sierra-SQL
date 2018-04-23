@@ -21,18 +21,18 @@ startingbib integer | endingbib integer
 
 ###### Control Fields
 ```
-SELECT bib_view. as BibNumber
-FROM sierra_view.bib_view, sierra_view.control_field
+SELECT record_metadata.record_type_code || record_metadata.record_num as BibNumber
+FROM sierra_view.record_metadata, sierra_view.control_field
 WHERE control_field.control_num = '7'
-AND control_field.record_id = bib_view.id
+AND control_field.record_id = record_metadata.id
 GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```
 
 ###### Variable Fields
 ```
-SELECT bib_view. as BibNumber
-FROM sierra_view.bib_view, sierra_view.varfield
+SELECT record_metadata.record_type_code || record_metadata.record_num as BibNumber
+FROM sierra_view.record_metadata, sierra_view.varfield
 WHERE varfield.marc_tag = '245'
-AND varfield.record_id = bib_view.id
+AND varfield.record_id = record_metadata.id
 GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```
