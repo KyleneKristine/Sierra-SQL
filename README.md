@@ -1,5 +1,7 @@
-Sierra-SQL
+SIERRA-SQL
 ======
+A collection of SQL expressions I have found useful for Sierra Direct.
+
 
 ## Bib Record Range
 #### Code
