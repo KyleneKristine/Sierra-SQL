@@ -1,8 +1,7 @@
 SIERRA-SQL
 ======
 A collection of SQL queries I have found useful for Sierra Direct. :+1:
-<br>
-<br> 
+![Coding Cat](https://camo.githubusercontent.com/a8eac700157bdf9da9a404855c5d91a68c59b360/68747470733a2f2f63646e2d696d616765732d312e6d656469756d2e636f6d2f6669742f742f323430302f313030382f302a6e2d32625738325a366d36553262696a2e6a706567) 
 <br>
 <br>
 
