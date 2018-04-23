@@ -53,6 +53,16 @@ AND varfield.record_id = record_metadata.id
 AND leader_field.record_id = record_metadata.id
 ```
 <br>
+## Transactions by Date
+Returns Item Numbers of items that circulated during specified time frame.
+```sql
+SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as BibNumber, circ_trans.transaction_gmt as TransTime
+FROM sierra_view.record_metadata, sierra_view.circ_trans
+WHERE circ_trans.item_record_id = record_metadata.id
+AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter dates
+GROUP BY BibNumber, TransTime
+```
+<br>
 
 ## Create Lists Difference
 Query that compares two create lists and finds BIBs not found in both. Created by [UNC Library](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki#diff-two-create-lists--review-files).
