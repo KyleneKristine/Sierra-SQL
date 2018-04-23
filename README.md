@@ -38,7 +38,7 @@ WHERE varfield.marc_tag = '245'
 AND varfield.record_id = record_metadata.id
 GROUP BY BibNumber HAVING COUNT(*) > 1;
 ```
-
+<br>
 ## Electronic Records without a Proxy
 ```sql
 SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as BibNumber
