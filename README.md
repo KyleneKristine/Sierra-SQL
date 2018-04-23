@@ -54,8 +54,45 @@ AND leader_field.record_id = record_metadata.id
 ```
 <br>
 
-## Bib Location
-Returns BIB Numbers of records whose BIB Location is not set to a BIB Location code.
+## Create Lists Difference
+Query that compares two create lists and finds BIBs not found in both. Created by [UNC Library](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki#diff-two-create-lists--review-files).
 ```sql
-
+with lists as (select 222 as list1   --enter list numbers here
+                     , 242 as list2   --enter list numbers here
+      ),
+      diff as (
+        select bs.record_metadata_id
+            , case when bs2.id is null then bs.bool_info_id::varchar
+                   else 'both'
+              end as appears
+            , case when bs2.id is null then bsi.name
+                   else 'both'
+              end as name
+        from sierra_view.bool_set bs
+        cross join lists
+        left join sierra_view.bool_set bs2 on bs2.record_metadata_id = bs.record_metadata_id
+          and bs2.bool_info_id = lists.list2
+        inner join sierra_view.bool_info bsi on bsi.id = lists.list1
+        where bs.bool_info_id = lists.list1
+        -- 
+        UNION
+        --
+        select bs2.record_metadata_id
+             , bs2.bool_info_id::varchar as appears
+             , bsi.name
+        from sierra_view.bool_set bs2
+        cross join lists
+        inner join sierra_view.bool_info bsi on bsi.id = lists.list2
+        where bs2.bool_info_id = lists.list2
+          and not exists (
+            select *
+            from sierra_view.bool_set
+            where record_metadata_id = bs2.record_metadata_id
+              and bool_info_id = lists.list1
+          )
+      ) --end diff
+ select rm.record_type_code || rm.record_num || 'a' as rnum, diff.appears, diff.name
+ from diff
+ inner join sierra_view.record_metadata rm on rm.id = diff.record_metadata_id
+ order by diff.appears
 ```
