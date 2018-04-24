@@ -63,7 +63,7 @@ SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as 
   circ_trans.transaction_gmt as TransTime
 FROM sierra_view.record_metadata, sierra_view.circ_trans
 WHERE circ_trans.item_record_id = record_metadata.id
-AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter dates
+AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter date range
 GROUP BY ItemNumber, TransTime
 ```
 ###### By Patron Code
@@ -73,7 +73,7 @@ SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as 
 FROM sierra_view.record_metadata, sierra_view.circ_trans
 WHERE circ_trans.item_record_id = record_metadata.id
 AND circ_trans.ptype_code = '21' -- enter ptype
-AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter dates
+AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter date range
 GROUP BY Ptype, ItemNumber, TransTime
 ORDER BY Ptype
 ```
@@ -105,7 +105,7 @@ Returns the number of records deleted on a specific day
 SELECT record_metadata.deletion_date_gmt as DeletionDate, 
   COUNT(record_metadata.deletion_date_gmt) as DeletedCount
 FROM sierra_view.record_metadata
-WHERE record_metadata.deletion_date_gmt BETWEEN '2018/01/01' AND '2018/05/01'
+WHERE record_metadata.deletion_date_gmt BETWEEN '2018/01/01' AND '2018/05/01' --enter date range
 GROUP BY DeletionDate
 ORDER BY DeletionDate
 ```
