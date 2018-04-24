@@ -52,7 +52,7 @@ WHERE varfield.marc_tag = '856'
 AND varfield.field_content not like '%https://login.revproxy.brown.edu/login?url=%'
 AND leader_field.record_type_code = 'm'
 AND varfield.record_id = record_metadata.id
-AND leader_field.record_id = record_metadata.id
+AND leader_field.record_id = record_metadata.id;
 ```
 <br>
 
@@ -64,7 +64,7 @@ SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as 
 FROM sierra_view.record_metadata, sierra_view.circ_trans
 WHERE circ_trans.item_record_id = record_metadata.id
 AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter date range
-GROUP BY ItemNumber, TransTime
+GROUP BY ItemNumber, TransTime;
 ```
 ###### By Patron Code
 ```sql
@@ -75,7 +75,7 @@ WHERE circ_trans.item_record_id = record_metadata.id
 AND circ_trans.ptype_code = '21' -- enter ptype
 AND circ_trans.transaction_gmt BETWEEN '2018/04/09' AND '2018/04/22' --enter date range
 GROUP BY Ptype, ItemNumber, TransTime
-ORDER BY Ptype
+ORDER BY Ptype;
 ```
 <br>
 
@@ -84,7 +84,7 @@ Returns BIB numbers of BIB records that have and empty or no 245.
 ```sql
 SELECT bib_view.record_type_code || bib_view.record_num || 'a' as BibNumber
 FROM sierra_view.bib_view
-WHERE bib_view.title is NULL 
+WHERE bib_view.title is NULL;
 ```
 <br>
 
@@ -95,7 +95,7 @@ SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as 
 	record_metadata.deletion_date_gmt as DeletionDate
 FROM sierra_view.record_metadata
 WHERE record_metadata.deletion_date_gmt is not NULL
-AND record_metadata.record_type_code = 'b' --enter record code 
+AND record_metadata.record_type_code = 'b'; --enter record code
 ```
 <br>
 
@@ -107,7 +107,7 @@ SELECT record_metadata.deletion_date_gmt as DeletionDate,
 FROM sierra_view.record_metadata
 WHERE record_metadata.deletion_date_gmt BETWEEN '2018/01/01' AND '2018/05/01' --enter date range
 GROUP BY DeletionDate
-ORDER BY DeletionDate
+ORDER BY DeletionDate;
 ```
 <br>
 
