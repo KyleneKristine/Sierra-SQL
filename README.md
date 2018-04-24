@@ -79,6 +79,15 @@ ORDER BY Ptype
 ```
 <br>
 
+## Records with No Titles
+Returns BIB numbers of BIB records that have and empty or no 245.
+```sql
+SELECT bib_view.record_type_code || bib_view.record_num || 'a' as BibNumber
+FROM sierra_view.bib_view
+WHERE bib_view.title is NULL 
+```
+<br>
+
 ## Create Lists Difference
 Query that compares two create lists and finds BIBs not found in both. Created by [UNC Library](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki#diff-two-create-lists--review-files).
 ```sql
