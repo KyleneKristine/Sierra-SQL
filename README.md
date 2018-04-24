@@ -88,6 +88,29 @@ WHERE bib_view.title is NULL
 ```
 <br>
 
+## Deleted Records
+Returns Record Numbers that have been deleted and their deletion date
+```sql
+SELECT record_metadata.record_type_code || record_metadata.record_num || 'a' as RecordNumber,
+	record_metadata.deletion_date_gmt as DeletionDate
+FROM sierra_view.record_metadata
+WHERE record_metadata.deletion_date_gmt is not NULL
+AND record_metadata.record_type_code = 'b' --enter record code 
+```
+<br>
+
+## Number of Records Deleted
+Returns the number of records deleted on a specific day
+```sql
+SELECT record_metadata.deletion_date_gmt as DeletionDate, 
+  COUNT(record_metadata.deletion_date_gmt) as DeletedCount
+FROM sierra_view.record_metadata
+WHERE record_metadata.deletion_date_gmt BETWEEN '2018/01/01' AND '2018/05/01'
+GROUP BY DeletionDate
+ORDER BY DeletionDate
+```
+<br>
+
 ## Create Lists Difference
 Query that compares two create lists and finds BIBs not found in both. Created by [UNC Library](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki#diff-two-create-lists--review-files).
 ```sql
