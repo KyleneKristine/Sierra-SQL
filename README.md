@@ -116,9 +116,10 @@ Query pulls unique tags used in the 71020 field and counts the number of records
 ```sql
 SELECT distinct(varfield.field_content) as FContent, COUNT(varfield.field_content)
 FROM sierra_view.varfield
-WHERE varfield.marc_tag = '710'
-AND varfield.marc_ind1 = '2'
-AND varfield.field_content like '%5RPB%'
+WHERE varfield.marc_tag = '710' --enter marc tag
+AND varfield.marc_ind1 = '2' --enter first indicator
+AND varfield.marc_ind2 = '0' --enter second indicator
+AND varfield.field_content like '%5RPB%' --use to search specific subfields
 GROUP BY FContent
 ORDER BY FContent ASC
 ```
