@@ -111,6 +111,19 @@ ORDER BY DeletionDate;
 ```
 <br>
 
+## Distinct Tag Counts
+Query pulls unique tags used in the 71020 field and counts the number of records using the tag
+```sql
+SELECT distinct(varfield.field_content) as FContent, COUNT(varfield.field_content)
+FROM sierra_view.varfield
+WHERE varfield.marc_tag = '710'
+AND varfield.marc_ind1 = '2'
+AND varfield.field_content like '%5RPB%'
+GROUP BY FContent
+ORDER BY FContent ASC
+```
+<br>
+
 ## Create Lists Difference
 Query that compares two create lists and finds BIBs not found in both. Created by [UNC Library](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki#diff-two-create-lists--review-files).
 ```sql
