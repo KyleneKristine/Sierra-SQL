@@ -128,10 +128,10 @@ ORDER BY FContent ASC;
 ## Review List Word Count
 Query counts the number of records that contain a word.
 ```sql
-SELECT count(varfield_view.field_content) as FContent
+SELECT count(distinct(varfield_view.record_id)) as FContent
 FROM sierra_view.varfield_view, sierra_view.bool_set
-WHERE bool_set.bool_info_id = '257' --enter list number
-AND varfield_view.field_content like '%data%' --enter word between %s
+WHERE bool_set.bool_info_id = '257'
+AND varfield_view.field_content like '%data%'
 AND bool_set.record_metadata_id = varfield_view.record_id;
 ```
 <br>
