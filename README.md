@@ -119,9 +119,20 @@ FROM sierra_view.varfield
 WHERE varfield.marc_tag = '710' --enter marc tag
 AND varfield.marc_ind1 = '2' --enter first indicator
 AND varfield.marc_ind2 = '0' --enter second indicator
-AND varfield.field_content like '%5RPB%' --use to search specific subfields
+AND varfield.field_content like '%5RPB%' --use to search specific subfields, enter between %s
 GROUP BY FContent
-ORDER BY FContent ASC
+ORDER BY FContent ASC;
+```
+<br>
+
+## Review List Word Count
+Query counts the number of records that contain a word.
+```sql
+SELECT count(varfield_view.field_content) as FContent
+FROM sierra_view.varfield_view, sierra_view.bool_set
+WHERE bool_set.bool_info_id = '257' --enter list number
+AND varfield_view.field_content like '%data%' --enter word between %s
+AND bool_set.record_metadata_id = varfield_view.record_id;
 ```
 <br>
 
