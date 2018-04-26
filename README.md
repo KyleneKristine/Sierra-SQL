@@ -136,6 +136,21 @@ AND bool_set.record_metadata_id = varfield_view.record_id;
 ```
 <br>
 
+## Broken BIB Locations
+Query looks for BIBs with incorrect codes in the location field.
+```sql
+SELECT bib_view.record_type_code || bib_view.record_num || 'a' as BibNumber
+FROM sierra_view.bib_view, sierra_view.bib_record_location
+WHERE NOT bib_record_location.location_code like '%001%' --removes correct bib location codes
+AND NOT bib_record_location.location_code like '%multi%' --Not sure how to get around this. If there is more than one bib location it only appears as multi
+AND NOT bib_record_location.location_code like '%nnnnn%' --removes in-process
+AND NOT bib_record_location.location_code like '%fffff%' --removes on the fly
+AND NOT bib_record_location.location_code like '%xxxxx%' --removes reserves
+AND bib_record_location.bib_record_id = bib_view.id
+AND bib_view.record_type_code = 'b';
+```
+<br>
+
 ## Create Lists Difference
 Query that compares two create lists and finds BIBs not found in both. Created by [UNC Library](https://github.com/UNC-Libraries/III-Sierra-SQL/wiki#diff-two-create-lists--review-files).
 ```sql
