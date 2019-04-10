@@ -193,3 +193,134 @@ with lists as (select 222 as list1   --enter list numbers here
  inner join sierra_view.record_metadata rm on rm.id = diff.record_metadata_id
  order by diff.appears
 ```
+<br>
+
+## Flags Table
+Pulls bib and item information on records contained in a specific list. We then use CSS to arrange the pulled table into a printable flag format. Pulls Order Numbers, Call number, copy number, barcode, icode2, item status code, bib record number, item record number, 910 tags containing Hathi (but only the last 3 characters e.g. 'SPM'), title, edition, publisher, description, local notes, volume, and finally whether the item record is bound with more than one bib record. 
+```sql
+DROP TABLE IF EXISTS temp_item_data;
+DROP TABLE IF EXISTS temp_dupe;
+CREATE TEMP TABLE temp_item_data AS
+SELECT
+bo.display_order,
+(SELECT o.record_type_code || o.record_num || 'a'
+ FROM sierra_view.order_view as o, sierra_view.bib_record_order_record_link as ol
+ WHERE o.id = ol.order_record_id AND ol.bib_record_id=l.bib_record_id
+LIMIT 1) as ordernum,
+p.call_number_norm,
+i.copy_num,
+(SELECT 
+ 	vv.field_content 
+ FROM 
+ 	sierra_view.varfield as vv 
+ WHERE 
+ 	vv.record_id = l.item_record_id 
+ 	AND vv.varfield_type_code = 'v' 
+ LIMIT 1) as volume,
+p.barcode,
+i.icode2,
+i2.item_status_code,
+rb.record_type_code || rb.record_num || 'a' as bib_record_num,
+ri.record_type_code || ri.record_num || 'a' as item_record_num,
+(SELECT
+	regexp_replace(trim(v.field_content), '(\|[a-z]{1}Hathi Trust Report)', '', 'ig')
+	FROM
+	sierra_view.varfield as v
+	WHERE
+	v.record_id = l.bib_record_id
+	AND v.marc_tag='910'
+  	AND v.field_content like '%Hathi%'
+	ORDER BY
+	v.occ_num
+	LIMIT 1) as localtag,
+(SELECT
+	(sv.content)
+	FROM
+	sierra_view.subfield_view as sv
+	WHERE
+	sv.record_id = l.bib_record_id
+	AND sv.marc_tag='245'
+ 	AND sv.tag='a'
+	ORDER BY
+	sv.occ_num
+	LIMIT 1) as title,
+(SELECT
+	regexp_replace(trim(v.field_content), '(\|[a-z]{1})', '', 'ig')
+	FROM
+	sierra_view.varfield as v
+	WHERE
+	v.record_id = l.bib_record_id
+	AND v.marc_tag='250'
+	ORDER BY
+	v.occ_num
+	LIMIT 1) as edition,
+(SELECT
+	regexp_replace(trim(v.field_content), '(\|[a-z]{1})', '', 'ig')
+	FROM
+	sierra_view.varfield as v
+	WHERE
+	v.record_id = l.bib_record_id
+	AND v.marc_tag='260'
+	ORDER BY
+	v.occ_num
+	LIMIT 1) as publisher,
+(SELECT
+	regexp_replace(trim(v.field_content), '(\|[a-z]{1})', '', 'ig')
+	FROM
+	sierra_view.varfield as v
+	WHERE
+	v.record_id = l.bib_record_id
+	AND v.marc_tag='300'
+	ORDER BY
+	v.occ_num
+	LIMIT 1) as description,
+i.location_code iloc,
+(SELECT
+	regexp_replace(trim(v.field_content), '(\|[a-z]{1})', '', 'ig')
+	FROM
+	sierra_view.varfield as v
+	WHERE
+	v.record_id = l.bib_record_id
+	AND v.marc_tag='590'
+	ORDER BY
+	v.occ_num
+	LIMIT 1) as localnotes
+
+FROM sierra_view.item_record as i
+
+JOIN sierra_view.bib_record_item_record_link as l
+ON (l.item_record_id = i.record_id)
+
+JOIN sierra_view.item_view as i2
+ON (i2.id=i.record_id)
+
+JOIN sierra_view.item_record_property as p
+ON (p.item_record_id=i.record_id)
+
+JOIN sierra_view.bool_set as bo
+ON (bo.record_metadata_id=i.record_id)
+
+JOIN sierra_view.record_metadata as ri
+ON (ri.id = i.record_id)
+
+JOIN sierra_view.record_metadata as rb
+ON (rb.id = l.bib_record_id) AND (rb.campus_code = '')
+
+WHERE bo.bool_info_id=171; --Change number to whatever list you are using in Sierra
+
+CREATE TEMP TABLE temp_dupe AS
+SELECT
+count(l.bib_record_id)>1 as BNDWITH, bo.display_order
+FROM
+sierra_view.bib_record_item_record_link as l
+JOIN sierra_view.bool_set as bo ON (bo.record_metadata_id=l.item_record_id)
+WHERE bo.bool_info_id=171 --Change number to whatever list you are using in Sierra
+GROUP BY l.item_record_id, bo.display_order;
+
+SELECT
+t.*, du.BNDWITH
+FROM
+temp_item_data as t
+JOIN temp_dupe as du ON (du.display_order = t.display_order)
+ORDER BY t.display_order;
+```
