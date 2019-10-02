@@ -324,7 +324,7 @@ temp_item_data as t
 JOIN temp_dupe as du ON (du.display_order = t.display_order)
 ORDER BY t.display_order;
 ```
-##Duplicate DDAs
+## Duplicate DDAs
 We have several DDA plans from different vendors. Normally we use Sierra's heading reports but we get a lot of matches for physical and electronic records which eats up a lot of time investigating. This allows me to pull only records from our JSTOR and GOBI DDAs and look for duplicate isbns to investigate.
 ```sql
 DROP TABLE IF EXISTS DDAs;
