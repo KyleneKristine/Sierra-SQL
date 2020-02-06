@@ -342,3 +342,35 @@ DDAs as d
 WHERE d.isbns IN (SELECT d.isbns FROM DDAs as d WHERE d.index_tag='i' GROUP BY d.isbns HAVING count(d.id)>1)
 ORDER BY d.isbns
 ```
+## Mismatching Call numbers between Serials and Mono Series
+We noticed that our bibs for serials and the bibs for individual monographs in those series sometimes didn't match up or were slightly off. This code looks for Serials and Monographs that share an item record but have different call numbers.
+```sql
+DROP TABLE IF EXISTS LCS;
+DROP TABLE IF EXISTS LCM;
+
+CREATE TEMP TABLE LCS AS
+SELECT 'b' || VVS.record_num || 'a' as serial_num, VVS.field_content as serial_call, VVS.record_id as serialid, BWD.item_record_id as serial_item_id
+FROM sierra_view.varfield_view as VVS JOIN sierra_view.bib_record_item_record_link as BWD ON BWD.bib_record_id=VVS.record_id
+WHERE BWD.item_record_id IN (SELECT BWD.item_record_id as serial_id
+FROM sierra_view.leader_field as LF JOIN sierra_view.bib_record_item_record_link as BWD ON BWD.bib_record_id=LF.record_id
+WHERE LF.bib_level_code = 's' AND BWD.item_record_id IN (SELECT BL.item_record_id
+FROM sierra_view.bib_record_item_record_link as BL
+GROUP BY BL.item_record_id
+HAVING count(BL.bib_record_id)>1))
+AND VVS.marc_tag='090';
+
+CREATE TEMP TABLE LCM AS
+SELECT 'b' || VVS.record_num || 'a' as mono_num, VVS.field_content as mono_call, VVS.record_id as monoid, BWD.item_record_id as mono_item_id
+FROM sierra_view.varfield_view as VVS JOIN sierra_view.bib_record_item_record_link as BWD ON BWD.bib_record_id=VVS.record_id
+WHERE BWD.item_record_id IN (SELECT BWD.item_record_id as serial_id
+FROM sierra_view.leader_field as LF JOIN sierra_view.bib_record_item_record_link as BWD ON BWD.bib_record_id=LF.record_id
+WHERE LF.bib_level_code = 'm' AND BWD.item_record_id IN (SELECT BL.item_record_id
+FROM sierra_view.bib_record_item_record_link as BL
+GROUP BY BL.item_record_id
+HAVING count(BL.bib_record_id)>1))
+AND VVS.marc_tag='090';
+
+SELECT LCS.serial_num, LCS.serial_call, LCM.mono_num, LCM.mono_call
+FROM LCS JOIN LCM ON LCM.mono_item_id = LCS.serial_item_id
+WHERE LCS.serial_call != mono_call
+```
