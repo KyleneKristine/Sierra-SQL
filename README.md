@@ -372,5 +372,5 @@ AND VVS.marc_tag='090';
 
 SELECT LCS.serial_num, LCS.serial_call, LCM.mono_num, LCM.mono_call
 FROM LCS JOIN LCM ON LCM.mono_item_id = LCS.serial_item_id
-WHERE LCS.serial_call != mono_call
+WHERE LCS.serial_call != LCM.mono_call
 ```
